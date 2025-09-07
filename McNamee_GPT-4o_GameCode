@@ -136,6 +136,4 @@ class Enemy {
   
   display() {
     fill(255, 0, 0);
-    ellipse(this.x, this.y, this.size);
-  }
-}
+    ellipse(this.x, this.y, this.size);}}
