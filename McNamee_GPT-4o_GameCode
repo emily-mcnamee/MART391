@@ -1,1 +1,141 @@
+let player;
+let collectibles = [];
+let enemies = [];
+let collected = 0;
+let gameWon = false;
+let gameLost = false;
+let numCollectibles = 3;
+let numEnemies = 5;
+let centerX, centerY;
 
+function setup() {
+  createCanvas(600, 600);
+  centerX = width / 2;
+  centerY = height / 2;
+  player = new Player();
+  
+  for (let i = 0; i < numCollectibles; i++) {
+    collectibles.push(new Collectible());
+  }
+  
+  for (let i = 0; i < numEnemies; i++) {
+    enemies.push(new Enemy());
+  }
+}
+
+function draw() {
+  background(200);
+  
+  if (gameWon) {
+    fill(0, 255, 0);
+    textSize(32);
+    textAlign(CENTER);
+    text("You Win!", width / 2, height / 2);
+    return;
+  }
+
+  if (gameLost) {
+    fill(255, 0, 0);
+    textSize(32);
+    textAlign(CENTER);
+    text("Game Over", width / 2, height / 2);
+    return;
+  }
+  
+  player.update();
+  player.display();
+  
+  for (let collectible of collectibles) {
+    collectible.display();
+    if (player.intersects(collectible)) {
+      collectible.collect();
+      collected++;
+      if (collected >= numCollectibles && player.intersectsCenter()) {
+        gameWon = true;
+      }
+    }
+  }
+  
+  for (let enemy of enemies) {
+    enemy.move();
+    enemy.display();
+    if (player.intersects(enemy)) {
+      gameLost = true;
+    }
+  }
+
+  fill(0);
+  textSize(16);
+  text("Collected: " + collected + '/' + numCollectibles, 10, height - 10);
+}
+
+class Player {
+  constructor() {
+    this.x = width / 2;
+    this.y = height / 2;
+    this.size = 20;
+    this.speed = 3;
+  }
+  
+  update() {
+    if (keyIsDown(LEFT_ARROW)) this.x -= this.speed;
+    if (keyIsDown(RIGHT_ARROW)) this.x += this.speed;
+    if (keyIsDown(UP_ARROW)) this.y -= this.speed;
+    if (keyIsDown(DOWN_ARROW)) this.y += this.speed;
+  }
+  
+  intersects(entity) {
+    return dist(this.x, this.y, entity.x, entity.y) < (this.size + entity.size) / 2;
+  }
+  
+  intersectsCenter() {
+    return dist(this.x, this.y, centerX, centerY) < this.size;
+  }
+  
+  display() {
+    fill(0, 0, 255);
+    ellipse(this.x, this.y, this.size);
+  }
+}
+
+class Collectible {
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.size = 15;
+    this.collected = false;
+  }
+  
+  collect() {
+    this.collected = true;
+  }
+  
+  display() {
+    if (!this.collected) {
+      fill(0, 255, 0);
+      ellipse(this.x, this.y, this.size);
+    }
+  }
+}
+
+class Enemy {
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.size = 20;
+    this.xSpeed = random(-1, 1);
+    this.ySpeed = random(-1, 1);
+  }
+  
+  move() {
+    this.x += this.xSpeed;
+    this.y += this.ySpeed;
+    if (this.x < 0 || this.x > width) this.xSpeed *= -1;
+    if (this.y < 0 || this.y > height) this.ySpeed *= -1;
+  }
+  
+  display() {
+    fill(255, 0, 0);
+    ellipse(this.x, this.y, this.size);
+  }
+}
