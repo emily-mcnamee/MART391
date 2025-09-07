@@ -1,1 +1,150 @@
+let player;
+let collectibles = [];
+let enemies = [];
+let score = 0;
+let gameState = "playing"; // "playing", "won", "lost"
+let dropZone;
+
+function setup() {
+  createCanvas(600, 400);
+  
+  // Player setup
+  player = createVector(width / 2, height - 40);
+  
+  // Drop zone (center)
+  dropZone = { x: width / 2, y: height / 2, r: 30 };
+  
+  // Create collectibles
+  for (let i = 0; i < 3; i++) {
+    collectibles.push({
+      pos: createVector(random(20, width - 20), random(20, height - 20)),
+      collected: false
+    });
+  }
+  
+  // Create enemies
+  for (let i = 0; i < 4; i++) {
+    enemies.push({
+      pos: createVector(random(width), random(height)),
+      vel: p5.Vector.random2D().mult(2)
+    });
+  }
+}
+
+function draw() {
+  background(30);
+  
+  if (gameState === "playing") {
+    handleInput();
+    moveEnemies();
+    checkCollisions();
+  }
+  
+  drawDropZone();
+  drawCollectibles();
+  drawEnemies();
+  drawPlayer();
+  drawHUD();
+  
+  if (gameState === "won") {
+    showMessage("You Win! 🎉");
+  } else if (gameState === "lost") {
+    showMessage("Game Over 💀");
+  }
+}
+
+function handleInput() {
+  let speed = 3;
+  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) player.x -= speed;
+  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) player.x += speed;
+  if (keyIsDown(UP_ARROW) || keyIsDown(87)) player.y -= speed;
+  if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) player.y += speed;
+  
+  player.x = constrain(player.x, 0, width);
+  player.y = constrain(player.y, 0, height);
+}
+
+function moveEnemies() {
+  for (let e of enemies) {
+    e.pos.add(e.vel);
+    if (e.pos.x < 0 || e.pos.x > width) e.vel.x *= -1;
+    if (e.pos.y < 0 || e.pos.y > height) e.vel.y *= -1;
+  }
+}
+
+function checkCollisions() {
+  // Check enemy collision
+  for (let e of enemies) {
+    if (dist(player.x, player.y, e.pos.x, e.pos.y) < 15) {
+      gameState = "lost";
+    }
+  }
+  
+  // Check collectible pickup
+  for (let c of collectibles) {
+    if (!c.collected && dist(player.x, player.y, c.pos.x, c.pos.y) < 15) {
+      c.collected = true;
+    }
+  }
+  
+  // Check drop-off
+  for (let c of collectibles) {
+    if (c.collected && dist(player.x, player.y, dropZone.x, dropZone.y) < dropZone.r) {
+      if (c.collected !== "delivered") {
+        c.collected = "delivered";
+        score++;
+        if (score === collectibles.length) {
+          gameState = "won";
+        }
+      }
+    }
+  }
+}
+
+function drawDropZone() {
+  noFill();
+  stroke(0, 255, 0);
+  strokeWeight(2);
+  ellipse(dropZone.x, dropZone.y, dropZone.r * 2);
+}
+
+function drawCollectibles() {
+  noStroke();
+  for (let c of collectibles) {
+    if (c.collected === false) {
+      fill(255, 215, 0);
+      ellipse(c.pos.x, c.pos.y, 15);
+    } else if (c.collected === true) {
+      // Carrying collectible
+      fill(255, 215, 0);
+      ellipse(player.x, player.y - 20, 10);
+    }
+  }
+}
+
+function drawEnemies() {
+  fill(255, 0, 0);
+  noStroke();
+  for (let e of enemies) {
+    ellipse(e.pos.x, e.pos.y, 20);
+  }
+}
+
+function drawPlayer() {
+  fill(0, 150, 255);
+  ellipse(player.x, player.y, 20);
+}
+
+function drawHUD() {
+  fill(255);
+  noStroke();
+  textSize(16);
+  text(`Delivered: ${score} / ${collectibles.length}`, 10, 20);
+}
+
+function showMessage(msg) {
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  text(msg, width / 2, height / 2);}
 
