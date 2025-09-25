@@ -1,0 +1,110 @@
+/*Comments under each section created by Copilot*/ 
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+/*Sets the font for the whole page. Gives the background a light gray color. Removes default margin and padding for a clean layout. */
+
+#todo-container {
+  max-width: 500px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+/*Centers the to-do list box on the page. Adds padding and rounded corners. Adds a subtle shadow for depth. */
+
+#header h1 {
+  text-align: center;
+  color: #333;
+}
+/*Centers the title “To Do List”. Uses a dark gray color for contrast.*/
+
+#todo-form {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+/*Lays out the input box and button side by side. Adds spacing below the form.*/
+
+.input-item {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+}
+/* */
+
+#input-button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+
+#input-button:hover {
+  background-color: #218838;
+}
+/* Styles the input box and button. Makes the button green with white text. Adds hover effect for interactivity.*/
+
+h2 {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+#list-container {
+  list-style-type: none;
+  padding: 0;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #eee;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+}
+/*Removes bullet points from the task list. Styles each task with a light background and spacing.*/
+
+.task-text {
+  flex: 1;
+  cursor: pointer;
+}
+
+.task-text.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+/*Makes task text clickable. Adds strikethrough and faded color when marked as completed.*/
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+/*Styles the delete button in red. Makes it easy to click and visually distinct.*/
+
+.counter-container {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #333;
+}
+/*Centers the task counters. Adds spacing and readable font size.*/
